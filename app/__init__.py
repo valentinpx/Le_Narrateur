@@ -1,19 +1,22 @@
 import discord
 import asyncio
+import youtube_dl
+from discord.ext.commands import Bot
 from config import cfg
 
-cli = discord.Client()
+cli = Bot(cfg.prefix)
 
 @cli.event
 async def on_ready():
     print("Hello there !")
 
-@cli.event
-async def on_message(message):
-    if (message.author.id != cfg.id):
-        print(message.author.name + ": " + message.content)
-        await message.channel.send("Bien reçu")
+@cli.command()
+async def join(ctx):
+    channel = ctx.author.voice.channel
 
-@cli.event
-async def on_reaction_add(reaction, user):
-    print("ui")
+    await channel.connect()
+
+@cli.command()
+async def play(ctx, url: str):
+    voice_cli = ctx.guild.voice_client
+    voice_cli.play(discord.FFmpegPCMAudio("sound.mp3"))
